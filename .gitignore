@@ -1,0 +1,9 @@
+# Certificados locales (mkcert) — nunca commitear
+certs/
+# Secretos y env local
+.env
+frontend/.env.local
+# Build / deps
+frontend/dist/
+frontend/node_modules/
+backend/__pycache__/

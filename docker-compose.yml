@@ -1,0 +1,68 @@
+services:
+  # Cache temporal (códigos 2FA + cooldown). Sin esto el backend usa Postgres.
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Postgres local solo para dev sin Aiven. Uso: docker compose --profile local up
+  db:
+    profiles: ["local"]
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-finanzas}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-finanzas_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-finanzas}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-finanzas}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Si .env trae DATABASE_URL (Aiven) se usa ese. Si no, cae al local.
+      DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://${POSTGRES_USER:-finanzas}:${POSTGRES_PASSWORD:-finanzas_dev}@db:5432/${POSTGRES_DB:-finanzas}}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      JWT_SECRET: ${JWT_SECRET:-dev_secret_cambiar_en_prod}
+      JWT_EXPIRE_MIN: 30
+      # Para probar en el celular agrega tu IP https, ej: CORS_ORIGINS=https://192.168.40.4:4173
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://localhost:3000}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ./backend/app:/code/app:ro
+      - ./backend/alembic:/code/alembic:ro
+      - ./backend/alembic.ini:/code/alembic.ini:ro
+    command: ./entrypoint.sh --reload
+
+  # Proxy TLS + estáticos: un solo origen https://IP:8443 (web y /api juntos).
+  # Uso: docker compose up -d caddy api redis (IP del cert: ver certs/)
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "${CADDY_PORT:-8443}:8443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./certs:/certs:ro
+      - ./frontend/dist:/srv/app:ro
+
+volumes:
+  pgdata:
+  redisdata:

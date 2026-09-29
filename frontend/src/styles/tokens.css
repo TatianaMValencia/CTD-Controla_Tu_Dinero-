@@ -1,0 +1,235 @@
+/* CTD Financial Neo-Minimal — tokens canónicos */
+:root {
+  --navy: #050B3B;
+  --navy-2: #0A1763;
+  --navy-dark: #0D243B;
+  --navy-soft: #EAF0F5;
+  --navy-line: #8CA0B8;
+  --mint: #00FFAB;
+  --mint-dark: #16B98B;
+  --mint-soft: #E7FAF4;
+  --mint-dim: #5CF2C0;
+  --bg: #F7F9FA;
+  --bg-soft: #F8F9FA;
+  --auth-bg: #F6F9F8;
+  --surface: #FFFFFF;
+  --line: #E2E8F0;
+  --ink: #10202F;
+  --ink-soft: #6B7A87;
+  --danger: #E25555;
+  --danger-soft: rgba(226, 85, 85, 0.12);
+  --mint-tint: rgba(0, 255, 171, 0.14);
+  --warning: #D89A27;
+  --radius: 20px;
+  --shadow: 0 12px 32px rgba(5, 11, 59, 0.12);
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+[data-theme='dark'] {
+  --bg: #050B3B;
+  --bg-soft: #0A1240;
+  --surface: #0B1340;
+  --auth-bg: #050B3B;
+  --ink: #FFFFFF;
+  --ink-soft: #B9C2E0;
+  --line: #1B2560;
+}
+/* Chips en oscuro: borde visible y activo en mint */
+[data-theme='dark'] .chip { border-color: var(--ink-soft); background: transparent; color: var(--ink); }
+[data-theme='dark'] .chip.on { background: var(--mint); border-color: var(--mint); color: var(--navy); }
+
+* { box-sizing: border-box; }
+:root { color-scheme: light; }
+[data-theme='dark'] { color-scheme: dark; }
+/* Los button usan color de sistema por defecto: heredar el del tema */
+button { font: inherit; color: inherit; }
+body {
+  margin: 0;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Nivel 1: información base */
+.page { max-width: 480px; margin: 0 auto; padding: 20px 16px 110px; background: var(--bg); }
+.eyebrow { font-size: 12px; letter-spacing: 0.12em; color: var(--ink-soft); font-weight: 700; }
+.big-number { font-size: 44px; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+.divider { height: 1px; background: var(--line); margin: 16px 0; border: 0; }
+
+/* Nivel 2: tarjeta destacada navy */
+.card-featured {
+  background: linear-gradient(135deg, #050B3B 0%, #0A1763 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+  transition: transform 180ms ease, border-color 180ms ease;
+  border: 1px solid transparent;
+}
+.card-featured:hover { transform: translateY(-2px); border-color: var(--mint); }
+.card-featured .delta { color: var(--mint); font-weight: 700; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(5, 11, 59, 0.05);
+}
+
+/* Nivel 2: progreso mint */
+.progress { height: 10px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.progress > span {
+  display: block; height: 100%;
+  background: var(--mint);
+  border-radius: 99px;
+  transition: width 300ms ease-out;
+}
+
+/* Nivel 3: FAB */
+.fab {
+  position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%);
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--mint); color: var(--navy);
+  font-size: 34px; font-weight: 800; border: 0;
+  box-shadow: 0 10px 28px rgba(0, 255, 171, 0.4);
+  cursor: pointer;
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+.fab:active { transform: translateX(-50%) scale(0.94); }
+
+/* Nivel 2 glass solo bottom-nav + modal */
+.bottom-nav {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: rgba(5, 11, 59, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex; justify-content: space-around; padding: 12px 8px calc(12px + env(safe-area-inset-bottom));
+  z-index: 20;
+}
+.bottom-nav a { color: #B9C2E0; text-decoration: none; font-size: 12px; text-align: center; opacity: 0.8; }
+.bottom-nav a.router-link-active { color: var(--mint); opacity: 1; }
+
+/* Nivel 4: alertas */
+.alert { color: var(--danger); font-weight: 700; }
+
+.btn-primary {
+  background: var(--mint); color: var(--navy);
+  border: 0; border-radius: 14px; padding: 14px 18px;
+  font-weight: 800; width: 100%; cursor: pointer;
+}
+.btn-primary:disabled { opacity: .6; cursor: wait; }
+.btn-mint {
+  background: var(--mint); color: var(--navy);
+  border: 0; border-radius: 10px; padding: 8px 14px;
+  font-weight: 800; cursor: pointer; white-space: nowrap;
+}
+.btn-mint:disabled { opacity: .6; cursor: wait; }
+.btn-ghost {
+  background: none; border: 1px solid var(--line); border-radius: 10px;
+  padding: 8px 14px; color: var(--ink); cursor: pointer; white-space: nowrap;
+}
+.btn-ghost:disabled { opacity: .6; cursor: wait; }
+
+/* Spinner GPU-ligero (solo transform) para estados de carga */
+.spinner {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 2px solid rgba(5, 11, 59, 0.2); border-top-color: var(--navy);
+  animation: spin 700ms linear infinite;
+  display: inline-block; vertical-align: -3px; margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.input, select {
+  width: 100%; padding: 12px 14px; border-radius: 14px;
+  border: 1px solid var(--line); background: var(--surface);
+  color: var(--ink); font-size: 16px;
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* Solo transform/opacity en animaciones (GPU ligero) */
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 220ms ease-out; }
+
+/* ============ NIVEL 2 — información financiera (color con significado) ============ */
+.t-pos { color: var(--mint-dark); }
+.t-neg { color: var(--danger); }
+.t-warn { color: var(--warning); }
+.amount { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sub { font-size: 13px; color: var(--ink-soft); }
+
+/* Icono de movimiento con fondo tenue (profundidad sin sombras) */
+.icon-badge {
+  width: 40px; height: 40px; border-radius: 14px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 17px;
+}
+.icon-badge.is-in { background: var(--mint-tint); color: var(--mint-dark); }
+.icon-badge.is-out { background: var(--danger-soft); color: var(--danger); }
+
+/* Barras por estado: solo cambia la señal, no toda la tarjeta */
+.progress.warn > span { background: var(--warning); }
+.progress.bad > span { background: var(--danger); }
+
+/* ============ NIVEL 3 — momentos especiales ============ */
+.card-featured { position: relative; overflow: hidden; }
+.card-featured .glow-line {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--mint), transparent);
+  transform-origin: left;
+  animation: glowline 2.8s ease-in-out infinite;
+}
+@keyframes glowline { 0%, 100% { transform: scaleX(0.35); opacity: 0.5; } 50% { transform: scaleX(1); opacity: 1; } }
+
+.card-glow {
+  border: 1px solid var(--mint);
+  box-shadow: 0 0 0 4px rgba(0, 255, 171, 0.12), 0 12px 32px rgba(0, 255, 171, 0.18);
+  animation: glowin 600ms ease-out;
+}
+@keyframes glowin { from { box-shadow: 0 0 0 0 rgba(0, 255, 171, 0); transform: scale(0.985); } to { transform: none; } }
+.done-flag { color: var(--mint-dark); font-weight: 800; letter-spacing: 0.06em; font-size: 12px; }
+
+/* Editorial: números con presencia */
+.display { font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+
+/* Skeleton de carga (listas) */
+.skel { border-radius: 12px; background: linear-gradient(90deg, var(--line) 25%, var(--bg-soft) 50%, var(--line) 75%); background-size: 200% 100%; animation: skel 1.2s ease-in-out infinite; }
+@keyframes skel { to { background-position: -200% 0; } }
+
+/* ============ Auth editorial ============ */
+.auth-wrap { min-height: 100dvh; background: var(--auth-bg); }
+.auth-wrap .page { background: transparent; }
+.field label { display: block; font-size: 13px; font-weight: 700; color: var(--ink-soft); margin: 0 0 6px 2px; }
+.pass-wrap { position: relative; }
+.pass-wrap .input { padding-right: 48px; }
+.pass-eye { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 0; font-size: 18px; cursor: pointer; padding: 8px; }
+
+/* Banner install PWA (masificación) */.install-bar {
+  position: fixed; left: 12px; right: 12px; bottom: 84px; z-index: 25;
+  background: var(--navy); color: #fff; border-radius: 16px;
+  padding: 12px 14px; display: flex; gap: 10px; align-items: center;
+  box-shadow: var(--shadow);
+  animation: rise 240ms ease-out;
+}
+.install-bar small { opacity: 0.75; display: block; }
+
+/* Empty state editorial */
+.empty { text-align: center; padding: 28px 12px; color: var(--ink-soft); }
+.empty strong { display: block; color: var(--ink); font-size: 17px; margin-bottom: 4px; }
+
+/* Buscador con icono */
+.search-wrap { position: relative; }
+.search-wrap > i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-soft); }
+.search-wrap .input { padding-left: 40px; }
+
+/* Toggle luna/sol en auth */
+.theme-toggle {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 50%;
+  width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 18px; cursor: pointer; color: var(--ink);
+}
+
+@media (min-width: 900px) {
+  .page { max-width: 720px; }
+}

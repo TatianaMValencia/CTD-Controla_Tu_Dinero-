@@ -1,0 +1,19 @@
+# Origen único: frontend + API en el mismo esquema/host/puerto.
+# Adiós CORS, adiós preflights 400, adiós un cert por servicio.
+# El cert (certs/lan.pem) debe incluir la IP/host de acceso. Regenerar con:
+# mkcert -cert-file certs/lan.pem -key-file certs/lan-key.pem <IP> localhost 127.0.0.1
+{
+	admin off
+}
+
+:8443 {
+	tls /certs/lan.pem /certs/lan-key.pem
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+	handle {
+		root * /srv/app
+		try_files {path} /index.html
+		file_server
+	}
+}
